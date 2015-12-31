@@ -33,6 +33,18 @@ class Membership {
         }
     }
 
+    public function UpgradeMembership($userId)
+    {
+
+    }
+
+    public function getUserMemberShip($userId)
+    {
+
+
+
+    }
+
     /**
      * get the list of all the premium members
      *along with their username and their images
@@ -156,4 +168,6 @@ class Membership {
             }
         }
     }
+
+
 }
