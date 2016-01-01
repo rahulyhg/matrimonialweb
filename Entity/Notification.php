@@ -39,10 +39,13 @@ class Notification {
     {
         if($this->status)
         {
-           $this->query = "";
+           $this->userId = $this->user->forceGetUserId();
+           $this->userId = $this->user->decryptField($this->userId);
+           $this->query = "SELECT * FROM notification WHERE UserID = ".$this->userId;
            $this->result = $this->db->Select($this->query);
            if($this->result && mysqli_num_rows($this->result) > 0)
            {
+               array_push($this->data, ["Status"=>"ok"]);
                while(($row = mysqli_fetch_assoc($this->result)) != false)
                {
 
