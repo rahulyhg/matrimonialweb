@@ -15,8 +15,6 @@ $salary  = 'salary12345';
 array_push($temp, ["Education"=>$eduId, "Field"=>$fieldId, "Occupation"=>$occuId,
     "Salary"=>$salary]);
 
-$Education = $temp[0]['Education'];
-echo $Education;
 
 /*
 session_start();
