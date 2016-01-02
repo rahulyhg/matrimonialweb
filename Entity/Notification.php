@@ -99,6 +99,7 @@ class Notification {
     {
         if($this->status)
         {
+
            $this->userId = $this->user->forceGetUserId();
            $this->userId = $this->user->decryptField($this->userId);
            $this->query = "SELECT notification.message, notification.seen, notification.CreatedAt FROM notification WHERE UserID = ".$this->userId;

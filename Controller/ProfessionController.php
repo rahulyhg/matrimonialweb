@@ -20,6 +20,7 @@ class ProfessionController {
      */
     public function getProfessionalInformation()
     {
+
         $Object = new Profession();
         $result = $Object->getProfessionalInformation();
         return $result;

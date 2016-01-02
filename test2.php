@@ -8,12 +8,69 @@ ini_set('max_execution_time', 600);
  */
 
 $temp = array();
-$eduId   = 'education123132';
-$fieldId = 'field1qwda';
-$occuId  = 'occupationweqweqw';
-$salary  = 'salary12345';
-array_push($temp, ["Education"=>$eduId, "Field"=>$fieldId, "Occupation"=>$occuId,
-    "Salary"=>$salary]);
+for($i = 0; $i < 100; $i++)
+{
+
+    $timestamp = mt_rand(1, time());
+//Format that timestamp into a readable date string.
+    $string = date("Y-m-d H:m:s", $timestamp);
+    array_push($temp, [
+
+        "Message" => generateRandomString(),
+        "Seen" => rand(0,1),
+        "Time"=> $string
+
+    ]);
+}
+
+
+print_r($temp);
+echo '<br/> ========================================================================================================================== <br/>';
+
+//print_r(sorting($temp));
+print_r(usort($temp,$temp));
+
+usort($array, function($temp, $temp) {
+    return strcmp($temp['Time'], $temp['Time']);
+});
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+function sorting($temp)
+{
+    for($i=1; $i<count($temp); $i++)
+    {
+        $date1 = $temp[$i]['Time'];
+        //$date1 = strtotime($date1);
+        $j = $i-1;
+        $date2 = $temp[$j]['Time'];
+        //$date2 = strtotime($date2);
+        while($j >= 0 && $date2 > $date1)
+        {
+            $temp[$j+1]['Message'] = $temp[$j]['Message'];
+            $temp[$j+1]['Seen'] = $temp[$j]['Seen'];
+            $temp[$j+1]['Time'] = $temp[$j]['Time'];
+            $j -= 1;
+        }
+        $temp[$j+1]['Message'] = $temp[$i]['Message'];
+        $temp[$j+1]['Seen'] =    $temp[$i]['Seen'];
+        $temp[$j+1]['Time'] =    $temp[$i]['Time'];
+    }
+    return $temp;
+}
+
+
+
+
+
 
 
 /*
