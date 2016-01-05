@@ -26,4 +26,6 @@ class ProfessionController {
         return $result;
     }
 
+
+
 }

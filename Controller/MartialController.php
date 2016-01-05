@@ -33,4 +33,16 @@ class MartialController {
         $result = $Object->getUerMartialStatus($userId);
         return $result;
     }
+
+    /**
+     * update the martial status of the current logged in user
+     * @param $martialStatus
+     * @return array
+     */
+    public function updateUserMartialStatus($martialStatus)
+    {
+        $Object = new MartialStatus();
+        $result = $Object->updateUserMartialStatus($martialStatus);
+        return $result;
+    }
 }

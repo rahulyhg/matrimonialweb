@@ -33,4 +33,37 @@ function getAllDisability()
     });
 }
 
+/**
+ * update the disability function of the user
+ * @param disability
+ */
+function updateDisability(disability)
+{
+    if(!isNaN(disability))
+    {
+        var form = { disability : disability  };
+        $.ajax({
+
+            url: 'Action/updateUserDisability.php',
+            data: form,
+            type: 'post',
+            dataType: 'json',
+            success: function(data)
+            {
+                if(data[0]['Status'] == 'ok')
+                {
+
+                }
+                else
+                {
+                   console.log(data[0]['Message']);
+                }
+            },
+            error: function(data)
+            {
+                console.log("ERROR \n"+data);
+            }
+        });
+    }
+}
 

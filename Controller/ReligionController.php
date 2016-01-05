@@ -34,6 +34,19 @@ class ReligionController
         return $result;
     }
 
+    /**
+     * Update the user religion and sect attributes
+     * @param $religionId
+     * @param $sectId
+     * @return array
+     */
+    public function updateUserReligion($religionId, $sectId)
+    {
+        $Object = new Religion();
+        $result = $Object->updateUserReligion($religionId, $sectId);
+        return $result;
+    }
+
     public function getUserReligion($userId)
     {
         $Object = new Religion();

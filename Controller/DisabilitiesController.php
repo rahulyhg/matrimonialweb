@@ -22,4 +22,16 @@ class DisabilitiesController {
 
     }
 
+    /**
+     * add the disability to the user
+     * @param $disabilityId
+     * @return array
+     */
+    public function addDisability($disabilityId)
+    {
+        $Object = new Disability();
+        $result = $Object->addDisability($disabilityId);
+        return $result;
+    }
+
 }

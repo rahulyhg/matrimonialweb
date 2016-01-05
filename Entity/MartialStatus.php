@@ -7,6 +7,7 @@
  */
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/matrimonialweb/Connection/Connection.php');
+require_once($_SERVER['DOCUMENT_ROOT']. '/matrimonialweb/Entity/AES.php');
 
 class MartialStatus {
 
@@ -20,6 +21,8 @@ class MartialStatus {
     protected $connection;
     protected $query;
     protected $result;
+    protected $Aes;
+    protected $blockSize;
 
     /**
      * Constructor which loads the database connection
@@ -27,6 +30,7 @@ class MartialStatus {
     public function __construct()
     {
         $this->data = array();
+        $this->blockSize = 128;
         $this->status = true;
         $this->db = new DBConnection();
         $this->connection = $this->db->DBConnect();
@@ -35,6 +39,64 @@ class MartialStatus {
             $this->status = false;
             array_push($this->data, ["Status"=>"error", "Message" => mysqli_error($this->connection)]);
         }
+    }
+
+    /**
+     * update the user martial status
+     * @param $martialStatus
+     * @return array
+     */
+    public function updateUserMartialStatus($martialStatus)
+    {
+       if($this->status)
+       {
+           if($this->updateStatus($martialStatus))
+           {
+               array_push($this->data, ["Status"=>"ok"]);
+           }
+           else
+           {
+               return $this->data;
+           }
+       }
+       else
+       {
+           array_push($this->data, ["Status"=>"error", "Message"=>"connection error occurred"]);
+       }
+       return $this->data;
+    }
+
+    /**
+     * assist in updating martial status of the current logged in user
+     * @param $martialStatus
+     * @return bool
+     */
+    private function updateStatus($martialStatus)
+    {
+        if(!session_start())
+        {
+            session_start();
+        }
+        if(!isset($_SESSION['id']) || !empty($_SESSION['id']))
+        {
+            $id = $_SESSION['id'];
+            $id = $this->decryptField($id);
+            $this->query = "UPDATE profile SET martialId = $martialStatus WHERE UserID = $id";
+            $this->result = $this->db->Select($this->query);
+            if($this->result)
+            {
+                return true;
+            }
+            else
+            {
+                array_push($this->data, ["Status"=>"error", "Message"=>" problem occurred during updation"]);
+            }
+        }
+        else
+        {
+            array_push($this->data, ["Status"=>"error", "Message"=>"authorization problem occurred"]);
+        }
+        return false;
     }
 
     /**
@@ -107,6 +169,18 @@ class MartialStatus {
 
     }
 
-
+    /**
+     * decrypt the current field
+     * @param $field
+     * @return string
+     * @throws Exception
+     */
+    private function decryptField($field)
+    {
+        $this->Aes = new AES($field, $this->blockSize);
+        $this->Aes->setData($field);
+        $encrypted = $this->Aes->decrypt();
+        return $encrypted;
+    }
 
 }

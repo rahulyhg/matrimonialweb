@@ -8,6 +8,7 @@
 
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/matrimonialweb/Connection/Connection.php');
+require_once($_SERVER['DOCUMENT_ROOT']. '/matrimonialweb/Entity/AES.php');
 
 class Country
 {
@@ -22,15 +23,17 @@ class Country
     protected $connection;
     protected $query;
     protected $result;
-
+    protected $blockSize;
+    protected $Aes;
     /**
      * Constructor which loads the database connection
      */
     public function __construct()
     {
+        $this->db = new DBConnection();
         $this->data = array();
         $this->status = true;
-        $this->db = new DBConnection();
+        $this->blockSize = 128;
         $this->connection = $this->db->DBConnect();
         if(!$this->connection)
         {
@@ -39,6 +42,105 @@ class Country
         }
     }
 
+    /**
+     * Update the user states
+     * @param $countryId
+     * @param $cityId
+     * @return array
+     */
+    public function updateUserState($countryId, $cityId)
+    {
+        if($this->status)
+        {
+           if($this->updateStates($countryId, $cityId))
+           {
+               array_push($this->data, [ "Status"=>"ok"]);
+           }
+           else
+           {
+              return $this->data;
+           }
+        }
+        else
+        {
+            array_push($this->data, [ "Status"=>"Error", "Message"=>"Database connection error"]);
+        }
+        return $this->data;
+    }
+
+    /**
+     * update the state property of the current logged in user
+     * @param $countryId
+     * @param $cityId
+     * @return bool
+     */
+    private function updateStates($countryId, $cityId)
+    {
+        //start the session
+        if(!session_start())
+        {
+            session_start();
+        }
+        if(!isset($_SESSION['id']) || !empty($_SESSION['id']))
+        {
+            $userId = $_SESSION['id'];
+            $userId = $this->decryptField($userId);
+            $this->query = "SELECT state.stateid FROM state WHERE state.countryid = $countryId and state.cityid = $cityId";
+            $this->result = $this->db->Select($this->query);
+            if($this->result && mysqli_num_rows($this->result) > 0)
+            {
+                $row = mysqli_fetch_assoc($this->result);
+                $stateId = $row['stateId'];
+                $this->query = "UPDATE profile SET stateId = $stateId WHERE UserID = $userId";
+                $this->result = $this->db->Select($this->query);
+                if($this->result)
+                {
+                    return true;
+                }
+                else
+                {
+                    array_push($this->data, ["Status"=>"error", "Message"=>" error occurred during transaction"]);
+                }
+            }
+            else
+            {
+                array_push($this->data, ["Status"=>"error", "Message"=>"transaction error occurred"]);
+            }
+        }
+        else
+        {
+            array_push($this->data, ["Status"=>"error", "Message"=>"authorization error occurred"]);
+        }
+        return false;
+    }
+
+    /**
+     * Update the cell attribute of the user
+     * @param $cell
+     * @return bool
+     */
+    public function updateUserCell($cell, $userId)
+    {
+        if($this->status)
+        {
+           $userId = $this->decryptField($userId);
+           $this->query = "UPDATE profile SET phone = '$cell' WHERE profile.UserID = $userId";
+           $this->result = $this->db->Select($this->query);
+           if($this->result)
+           {
+               array_push($this->data, [ "Status"=>"ok"]);
+           }
+           else
+           {
+               array_push($this->data, [ "Status"=>"Error", "Message"=>" error occurred during updating fields"]);
+           }
+        }
+        else
+        {
+            array_push($this->data, [ "Status"=>"Error", "Message"=>"Database connection error"]);
+        }
+        return $this->status;
+    }
 
     /**
      * fetch the given user state information along with its state and city
@@ -209,5 +311,19 @@ class Country
         }
         return $this->data;
 
+    }
+
+    /**
+     * decrypt the current field
+     * @param $field
+     * @return string
+     * @throws Exception
+     */
+    private function decryptField($field)
+    {
+       $this->Aes = new AES($field, $this->blockSize);
+       $this->Aes->setData($field);
+       $encrypted = $this->Aes->decrypt();
+       return $encrypted;
     }
 }

@@ -102,7 +102,7 @@ class Notification {
 
            $this->userId = $this->user->forceGetUserId();
            $this->userId = $this->user->decryptField($this->userId);
-           $this->query = "SELECT notification.message, notification.seen, notification.CreatedAt FROM notification WHERE UserID = ".$this->userId;
+           $this->query = "SELECT notification.message, notification.seen, notification.CreatedAt FROM notification WHERE UserID = ".$this->userId. ' ORDER BY notification.CreatedAt DESC';
            $this->result = $this->db->Select($this->query);
            if($this->result && mysqli_num_rows($this->result) > 0)
            {
@@ -137,8 +137,16 @@ class Notification {
      */
     private function sortNotifications()
     {
+        $seen1 = $this->data[0]['Seen'];
+        for($i=1; $i<count($this->data); $i++)
+        {
 
-
-
+            $seen2 = $this->data[$i+1]['Seen'];
+            if($seen2 == 0 && $seen1 == 1)
+            {
+                $this->data[$i+1] = $this->data[$i];
+            }
+            $seen1 = $this->data[$i]['Seen'];
+        }
     }
 }

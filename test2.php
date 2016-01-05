@@ -8,7 +8,7 @@ ini_set('max_execution_time', 600);
  */
 
 $temp = array();
-for($i = 0; $i < 100; $i++)
+for($i = 0; $i < 6; $i++)
 {
 
     $timestamp = mt_rand(1, time());
@@ -26,13 +26,14 @@ for($i = 0; $i < 100; $i++)
 
 print_r($temp);
 echo '<br/> ========================================================================================================================== <br/>';
+print_r(sortBySeen($temp));
 
 //print_r(sorting($temp));
-print_r(usort($temp,$temp));
+//print_r(usort($temp,$temp));
 
-usort($array, function($temp, $temp) {
-    return strcmp($temp['Time'], $temp['Time']);
-});
+//usort($array, function($temp, $temp) {
+//    return strcmp($temp['Time'], $temp['Time']);
+//});
 
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -48,27 +49,49 @@ function sorting($temp)
 {
     for($i=1; $i<count($temp); $i++)
     {
+        $innerIndex = 0;
         $date1 = $temp[$i]['Time'];
         //$date1 = strtotime($date1);
-        $j = $i-1;
+        $j = $i - 1;
+        echo 'j (loop) se pehly: '.  $j . '<br/>';
         $date2 = $temp[$j]['Time'];
         //$date2 = strtotime($date2);
+        echo 'i: '.  $i . '<br/>';
+        echo 'j: '.  $j . '<br/>';
         while($j >= 0 && $date2 > $date1)
         {
-            $temp[$j+1]['Message'] = $temp[$j]['Message'];
-            $temp[$j+1]['Seen'] = $temp[$j]['Seen'];
-            $temp[$j+1]['Time'] = $temp[$j]['Time'];
-            $j -= 1;
+            $temp[$j+1] = $temp[$j];
+            $j--;
+            echo 'j (loop): '.  $j . '<br/>';
+            if($j == -1)
+            {
+                $j = 0;
+                break;
+            }
         }
-        $temp[$j+1]['Message'] = $temp[$i]['Message'];
-        $temp[$j+1]['Seen'] =    $temp[$i]['Seen'];
-        $temp[$j+1]['Time'] =    $temp[$i]['Time'];
+        echo 'j (loop) k bahar: '.  $j . '<br/>';
+        $temp[$j+1] = $temp[$i];
+
     }
     return $temp;
 }
 
 
+function sortBySeen($array)
+{
+    $seen1 = $array[0]['Seen'];
+    for($i=1; $i<count($array); $i++)
+    {
 
+        $seen2 = $array[$i+1]['Seen'];
+        if($seen2 == 0 && $seen1 == 1)
+        {
+            $array[$i+1] = $array[$i];
+        }
+        $seen1 = $array[$i]['Seen'];
+    }
+    return $array;
+}
 
 
 

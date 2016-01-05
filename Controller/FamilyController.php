@@ -50,4 +50,17 @@ class FamilyController {
         return $result;
     }
 
+    /**
+     * update the family information of the logged in user
+     * @param $familyType
+     * @param $familyStatus
+     * @return array
+     */
+    public function updateUserFamily($familyType, $familyStatus)
+    {
+        $Object = new Family();
+        $result = $Object->updateFamilyInformation($familyType, $familyStatus);
+        return $result;
+    }
+
 }

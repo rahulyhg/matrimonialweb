@@ -79,3 +79,41 @@ function getSects(religion)
 
 
 }
+
+/**
+ * update the user religion and sect with according to the given fields
+ * @param religionId
+ * @param sectId
+ */
+function updateUserReligion(religionId, sectId)
+{
+    if(!isNaN(religionId) && !isNaN(sectId))
+    {
+        var form  = { religionId: religionId , sectId: sectId};
+        $.ajax({
+              url: 'Action/updateUserReligion.php',
+              data: form,
+              dataType: 'json',
+              type: 'post',
+              success: function(data)
+              {
+                  if(data[0]['Status'] == 'ok')
+                  {
+
+                  }
+                  else
+                  {
+                      console.log(data[0]['Message']);
+                  }
+              },
+              error: function (data)
+              {
+                  console.log(data.toString());
+              }
+        });
+    }
+    else
+    {
+        console.log("Wrong fields");
+    }
+}

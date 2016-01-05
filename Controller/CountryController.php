@@ -55,4 +55,31 @@ class CountryController
         return $result;
     }
 
+    /**
+     * if the user decided to update its current state status then the functionality of this interface is to
+     * Update the current logged in user country and city
+     * @param $countryId
+     * @param $cityId
+     * @return array
+     */
+    public function updateUserState($countryId, $cityId)
+    {
+        $Object = new Country();
+        $result = $Object->updateUserState($countryId, $cityId);
+        return $result;
+    }
+
+    /**
+     * if the current logged in user wants to update its cell number then the cell number will be updated
+     * by the help of this interface
+     * @param $cell
+     * @param $userId
+     * @return bool
+     */
+    public function updateUserCell($cell, $userId)
+    {
+        $Object = new Country();
+        $result = $Object->updateUserCell($cell, $userId);
+        return $result;
+    }
 }

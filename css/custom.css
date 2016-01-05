@@ -47,3 +47,13 @@
     font-size: 28px;
 
 }
+
+.notification{
+
+    background-color: cornflowerblue;
+}
+
+.notification:hover{
+    background-color: #ffffff;
+
+}

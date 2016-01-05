@@ -144,3 +144,79 @@ function getStates(country)
           }
         });
 }
+
+/**
+ * update the state of the user
+ * @param countryId
+ * @param cityId
+ */
+function updateUserState(countryId, cityId)
+{
+    if(!isNaN(countryId) && !isNaN(cityId))
+    {
+        var form = { countryId: countryId , cityId: cityId  };
+        $.ajax({
+            url: 'Action/updateUserState.php',
+            data: form,
+            type: 'post',
+            dataType: 'json',
+            success: function(data)
+            {
+                if(data[0]['Status'] == 'ok')
+                {
+
+                }
+                else
+                {
+                    console.log(data[0]['Message']);
+                }
+            },
+            error: function(data)
+            {
+                console.log(data);
+            }
+        });
+    }
+    else
+    {
+       console.log("Invalid fields occurred");
+    }
+}
+
+
+/**
+ * Update the user cell number attribute
+ * @param cell
+ */
+function updateUserCell(cell)
+{
+    if(cell.length > 7 && cell.length < 20 )
+    {
+        var form = { cell: cell  };
+        $.ajax({
+            url: 'Action/updateUserCell.php',
+            data: form,
+            type: 'post',
+            dataType: 'json',
+            success: function(data)
+            {
+                if(data[0]['Status'] == 'ok')
+                {
+
+                }
+                else
+                {
+                    console.log(data[0]['Message']);
+                }
+            },
+            error: function(data)
+            {
+                console.log(data);
+            }
+        });
+    }
+    else
+    {
+        console.log("Invalid fields occurred");
+    }
+}

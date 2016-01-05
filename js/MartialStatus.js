@@ -64,3 +64,39 @@ function getMartialStatus(userId)
             }
         });
 }
+
+/**
+ * Update the martial status of the user
+ * @param martialStatus
+ */
+function updateUserMartialStatus(martialStatus)
+{
+    if(!isNaN(martialStatus))
+    {
+        var form = { martialStatus: martialStatus };
+        $.ajax({
+            url: 'Action/updateUserMartialStatus.php',
+            data: form,
+            dataType: 'json',
+            type: 'post',
+            success: function(data)
+            {
+                if(data[0]['Status'] == 'ok')
+                {
+
+                }
+                else
+                {
+                    console.log(data[0]['Message']);
+                }
+            },
+            error: function(data){
+                console.log(data);
+            }
+        });
+    }
+    else
+    {
+       console.log("error occurred");
+    }
+}

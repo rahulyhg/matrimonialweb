@@ -2,6 +2,9 @@
  * Created by Haziq on 12/6/2015.
  */
 
+/**
+ * gets the list of all the language stores
+ */
 function getLanguages()
 {
     $.ajax({
@@ -29,4 +32,42 @@ function getLanguages()
         }
     });
 
+}
+
+/**
+ * handle the request of updating user language
+ * @param language
+ */
+function updateUserLanguage(language)
+{
+    if(!isNaN(language))
+    {
+        var form = { language : language };
+        $.ajax({
+
+            url: 'Action/updateUserLanguage.php',
+            data: form,
+            type: 'post',
+            dataType: 'json',
+            success: function(data)
+            {
+                if(data[0]['Status'] == 'ok')
+                {
+
+                }
+                else
+                {
+
+                }
+            },
+            error: function(data)
+            {
+                console.log(data[0]['Message']);
+            }
+        });
+    }
+    else
+    {
+
+    }
 }
