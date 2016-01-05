@@ -7,6 +7,8 @@
  */
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/matrimonialweb/Connection/Connection.php');
+require_once($_SERVER['DOCUMENT_ROOT']. '/matrimonialweb/Entity/AES.php');
+
 
 class Membership {
 
@@ -16,12 +18,14 @@ class Membership {
     protected $connection;
     protected $query;
     protected $result;
-
     private $premiumMembers;
     private $typeId;
+    protected $Aes;
+    protected $blockSize;
 
     public function __construct()
     {
+        $this->blockSize = 128;
         $this->status = true;
         $this->premiumMembers = array();
         $this->data           = array();
@@ -40,9 +44,59 @@ class Membership {
 
     public function getUserMemberShip($userId)
     {
+        if($this->status)
+        {
+             if($this->getMembership())
+             {
+                 return $this->data;
+             }
+        }
+        else
+        {
+            array_push($this->data, ["Status"=>"error", "Message"=>"Connection error occurred"]);
+        }
+        return $this->data;
+    }
 
-
-
+    private function getMembership()
+    {
+        if(!session_start())
+        {
+            session_start();
+        }
+        if(!isset($_SESSION['id']) || !empty($_SESSION['id']))
+        {
+            $id = $_SESSION['id'];
+            $id = $this->decryptField($id);
+            $this->query = "SELECT typeId FROM usermembership WHERE UserID = $id";
+            $this->result = $this->db->Select($this->query);
+            if($this->result && $this->getPremiumType())
+            {
+                $row = mysqli_fetch_assoc($this->result);
+                $userType = $row['typeId'];
+                if($userType == $this->typeId)
+                {
+                    //user is premium
+                    array_push($this->data, ["Status"=>"ok", "Membership"=>"Premium"]);
+                    return true;
+                }
+                else
+                {
+                    //user is free member
+                    array_push($this->data, ["Status"=>"ok", "Membership"=>"Free"]);
+                    return true;
+                }
+            }
+            else
+            {
+                array_push($this->data, ["Status"=>"error", "Message"=>"error occurred during transaction"]);
+            }
+        }
+        else
+        {
+            array_push($this->data, ["Status"=>"error", "Message"=>"Authorization error occurred"]);
+        }
+        return false;
     }
 
     /**
@@ -169,5 +223,18 @@ class Membership {
         }
     }
 
+    /**
+     * decrypt the current field
+     * @param $field
+     * @return string
+     * @throws Exception
+     */
+    private function decryptField($field)
+    {
+        $this->Aes = new AES($field, $this->blockSize);
+        $this->Aes->setData($field);
+        $encrypted = $this->Aes->decrypt();
+        return $encrypted;
+    }
 
 }
