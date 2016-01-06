@@ -42,7 +42,11 @@ class Membership {
 
     }
 
-    public function getUserMemberShip($userId)
+    /**
+     * Detect the user MemberShip Type
+     * @return array
+     */
+    public function getUserMemberShip()
     {
         if($this->status)
         {

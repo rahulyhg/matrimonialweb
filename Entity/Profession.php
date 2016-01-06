@@ -31,6 +31,40 @@ class Profession {
         $this->status = $this->user->getStatus();
     }
 
+    /**
+     * Update the user professional status
+     *  + education status
+     *  + field status
+     *  + working status
+     *  + salary status
+     *  + currency  status in which user is earning salary
+     * @param $educationId
+     * @param $fieldId
+     * @param $workingId
+     * @param $salary
+     * @param $currencyId
+     * @return array
+     */
+    public  function updateUserProfession($educationId, $fieldId, $workingId, $salary, $currencyId)
+    {
+       if($this->status)
+       {
+           if($this->updateUserProfessionalInformation($educationId,$fieldId,$workingId, $salary, $currencyId))
+           {
+               array_push($this->data,["Status"=>"ok"]);
+           }
+           else
+           {
+               return $this->data;
+           }
+       }
+       else
+       {
+            array_push($this->data, ["Status"=>"error", "Message"=>"Connection problem detected"]);
+       }
+       return $this->data;
+    }
+
 
     /**
      * Gets the professional information
@@ -63,7 +97,7 @@ class Profession {
 
     /**
      * + First get the professionId from the profile
-     * + After that frtch the EducationID, FieldID, OccupationID, FieldID, Salary from the profession table
+     * + After that fetch the EducationID, FieldID, OccupationID, FieldID, Salary from the profession table
      * @param $userId
      * @return bool
      */
@@ -140,4 +174,49 @@ class Profession {
        return false;
     }
 
+    /**
+     * update tje user professional information
+     * @param $educationId
+     * @param $fieldId
+     * @param $occupationId
+     * @param $salary
+     * @param $currencyId
+     * @return bool
+     */
+    private function  updateUserProfessionalInformation($educationId, $fieldId, $occupationId, $salary, $currencyId)
+    {
+        $userId = $this->user->forceGetUserId(); //Get the logged in userId
+        $userId = $this->user->decryptField($userId); // As the id is encrypted so decrypt it using same algorithm
+        //run a query to the user professional Information
+        $this->query  = "SELECT professionId FROM profile WHERE UserID = $userId";
+        $this->result = $this->db->Select($this->query);
+        if($this->result && mysqli_num_rows($this->result) > 0) //check for valid response
+        {
+            //fetch the professional identification of the user
+            $row          = mysqli_fetch_assoc($this->result);
+            $professionId = $row['professionId'];
+           //now update using given information
+           $this->query = "UPDATE profession SET eduId = $educationId, fieldId = $fieldId, occupationId = $occupationId,
+                           salary = $salary, currencyId = $currencyId WHERE professionId = $professionId ";
+
+            //update fields using above information
+            $this->result = $this->db->Select($this->query);
+            if($this->result ) //check for valid response
+            {
+                //all fields are updated.. WOW well played
+                return true;
+            }
+            else
+            {
+                //Mission abort... some error detected
+                array_push($this->data, ["Status"=>"error" , "Message"=>"Error occurred during updating professional information"]);
+            }
+        }
+        else
+        {
+            //Retreat error ahead.. I repeat error ahead.. MAYDAY MAYDAY.....
+            array_push($this->data, ["Status"=>"error" , "Message"=>"Error occurred during transaction"]);
+        }
+        return false;
+    }
 }

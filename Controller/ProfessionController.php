@@ -20,9 +20,24 @@ class ProfessionController {
      */
     public function getProfessionalInformation()
     {
-
         $Object = new Profession();
         $result = $Object->getProfessionalInformation();
+        return $result;
+    }
+
+    /**
+     * Update the professional information of the user
+     * @param $educationId
+     * @param $fieldId
+     * @param $occupationId
+     * @param $salary
+     * @param $currencyId
+     * @return array
+     */
+    public function updateUserProfessionalInformation($educationId, $fieldId, $occupationId, $salary, $currencyId)
+    {
+        $Object = new Profession();
+        $result = $Object->updateUserProfession($educationId,$fieldId,$occupationId,$salary,$currencyId);
         return $result;
     }
 

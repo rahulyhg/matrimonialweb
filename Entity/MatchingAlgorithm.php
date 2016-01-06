@@ -311,7 +311,6 @@ class PartnerInformation{
     private $result;
     private $data;
 
-
     private $partnerGenderId,$partnerGender, $partnerAge, $partnerReligion, $partnerSect, $is_muslim,
             $partnerReligionSectId, $partnerCountry, $partnerStates, $partnerAllSects;
 

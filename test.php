@@ -7,6 +7,14 @@
  */
 
 
+
+$array = range(18, 35);
+sort($array);
+$string = implode(',',$array);
+echo print_r($array) . '<br/>';
+echo $string . '<br/>';
+
+/*
 require_once($_SERVER['DOCUMENT_ROOT'].'/matrimonialweb/swiftmailer/lib/swift_required.php');
 
 $html = '<html> <body> <p> This is a fake email just for testing purpose </p></body>';
