@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Quicsk Search Test</title>
+
+
+    <script type="text/javascript" src="jslib/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="jslib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/Religion.js"></script>
+    <script type="text/javascript" src="js/Country.js"></script>
+    <script type="text/javascript" src="js/QuickSearch.js"></script>
+
+</head>
+<body>
+
+        <div>
+
+            <form>
+
+                <!--   Gender -->
+                <fieldset>
+                    <label for="gender"> Gender</label>
+                    <select id="gender">
+                        <option value="0">Select a a Gender</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </fieldset>
+
+                <!--   Religion -->
+                <fieldset>
+                    <label for="religion"> Religion</label>
+                    <select id="religion">
+                         </select>
+                </fieldset>
+
+                <!--  Sect -->
+                <fieldset>
+                    <label for="Sect"> sect</label>
+                    <select id="sect" onclick="getSects($('#religion').val())">
+                    </select>
+                </fieldset>
+
+                <!--  Country -->
+                <fieldset>
+                    <label for="country"> Country</label>
+                    <select id="country">
+                    </select>
+                </fieldset>
+
+
+                <!--  City -->
+                <fieldset>
+                    <label for="state"> City</label>
+                    <select id="state" onclick="getStates($('#country').val())">
+                    </select>
+                </fieldset>
+
+
+                <!--  AgeLow -->
+                <fieldset>
+                    <label for="ageLow"> AgeLow</label>
+                    <select id="ageLow" >
+                    </select>
+
+                    <label for="ageHigh">AgeHigh</label>
+                    <select id="ageHigh" >
+                    </select>
+                </fieldset>
+
+                <!--  Button  -->
+                <fieldset>
+                    <button id="search">Search Partner</button>
+                </fieldset>
+
+            </form>
+
+        </div>
+
+
+                <script>
+
+                    $(document).ready(function(){
+
+                        getReligions();
+                        loadCountriesName();
+
+                        for(var i=17; i<80; i++)
+                        {
+                            var option = '<option value="'+i+'" > '+ i + '</option>';
+                            $('#ageLow').append(option);  $('#ageHigh').append(option);
+                        }
+
+                        $('#search').click(function()
+                        {
+                            //alert("button is pressed");
+                            //ajax response
+                            $.ajax({
+                                //url, dataType = 'json', data, type = 'post'|'Get',
+                                // functions -- success, error, onComplete, beforeLoad
+                                url: 'Action/random.php',
+                                dataType: 'json',
+                                type: 'post',
+                                success: function(data)
+                                {
+
+                                   console.log(data); 
+                                   alert(data[0]['Random']);
+                                },
+                                error:   function(data)
+                                {
+                                    console.log(data);
+                                     alert("Error formed during response");
+                                }
+                            });
+
+                        });
+                    });
+
+
+                </script>
+
+</body>
+</html>

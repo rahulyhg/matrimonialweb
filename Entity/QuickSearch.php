@@ -8,7 +8,18 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/matrimonialweb/Connection/Connection.php');
 
-
+/**
+ * Perform the search operation based on the following fields
+ * + age
+ * + religion, sect
+ * + country, city
+ * + gender
+ *
+ * The class is responsible for fetching the partner list based upon the above fields
+ *
+ * Class QuickSearch
+ * version 1.0
+ */
 class QuickSearch {
 
     private $db;
@@ -18,10 +29,14 @@ class QuickSearch {
     private $status;
     private $data;
     private $error;
+    private $temp;
+    private $final;
 
     public function __construct()
     {
-        $this->data = array();
+        $this->final = array();
+        $this->temp  = array();
+        $this->data  = array();
         $this->status = true;
         $this->db = new DBConnection();
         $this->connection = $this->db->DBConnect();
@@ -68,7 +83,9 @@ class QuickSearch {
         {
              if($this->searchWithinReach($gender, $ageLow, $ageHigh, $religion, $sect, $country, $city))
               {
-                 return $this->data;
+                  array_push($this->data, ["Status"=>"ok"]);
+                  array_push($this->data, $this->final);
+                  return $this->data;
               }
              else
              {
@@ -88,7 +105,13 @@ class QuickSearch {
          $partnerAge = $this->getPartnerAge($ageLow, $ageHigh);
         if( ( $rid =  $this->getReligionSect($religion,$sect) > 0 ) && ( $sid =  $this->getState($country,$city)  > 0 ) )
         {
-
+            if($this->getPartnersList($gender, $partnerAge, $rid, $sid))
+            {
+               if($this->getUserNameImage())
+               {
+                   return true;
+               }
+            }
         }
          return false;
     }
@@ -108,6 +131,11 @@ class QuickSearch {
         return $string;
     }
 
+    /**Get the relative religion sect identification based upon the religion and sect
+     * @param $religion
+     * @param $sect
+     * @return int
+     */
     private function getReligionSect($religion, $sect)
     {
         $this->query = "SELECT religionsectId FROM religionsect WHERE religionId = $religion AND sectId = $sect";
@@ -122,6 +150,12 @@ class QuickSearch {
         return 0;
     }
 
+    /**
+     * get the relative state identification based upon the country and city identification
+     * @param $countryId
+     * @param $cityId
+     * @return int
+     */
     private  function getState($countryId, $cityId)
     {
         $this->query = "SELECT state.stateid FROM state WHERE countryid = $countryId AND cityid = $cityId";
@@ -136,6 +170,14 @@ class QuickSearch {
         return 0;
     }
 
+    /**
+     * Get the partner gender, identification Id
+     * @param $gender
+     * @param $age
+     * @param $religionSect
+     * @param $state
+     * @return bool
+     */
     private function getPartnersList($gender, $age, $religionSect, $state)
     {
         $this->query = "SELECT UserID,dob FROM profile WHERE age IN ($age) AND genderId = $gender AND religionId = $religionSect AND stateId = $state";
@@ -148,7 +190,12 @@ class QuickSearch {
                 {
                   $userId  = $row['UserID'];
                   $dob     = $row['dob'];
+                  $now     = new DateTime();
+                  $dob     = new DateTime($dob);
+                  $years   = $now->diff($dob)->y;
+                  array_push($this->temp, ["Id"=>$userId, "Age"=>$years]);
                 }
+                return true;
             }
             else
             {
@@ -160,5 +207,36 @@ class QuickSearch {
             $this->error .= "Extraction of partner information interrupted due to some error \n";
         }
         return false;
+    }
+
+    /**Extracts user name and approved image from the provided user identification
+     * @return bool
+     */
+    private function getUserNameImage()
+    {
+        for($i=0; $i<count($this->temp); $i++)
+        {
+            $id  = $this->temp[$i]['Id'];
+            $age = $this->temp[$i]['Age'];
+            $this->query="SELECT s.UserName, m.image FROM user s,image m WHERE s.UserID = $id AND m.UserID = $id AND approved = 1";
+            $this->result = $this->db->Select($this->query);
+            if($this->result && mysqli_num_rows($this->result) > 0)
+            {
+               $row      = mysqli_fetch_assoc($this->result);
+               $userName = $row['UserName'];
+               $image   = base64_encode($row['image']);
+               array_push($this->final, [
+                                       "UserName" => $userName,
+                                       "Age"=>$age,
+                                       "Image"=>$image
+               ]);
+            }
+            else
+            {
+                 $this->error .= "Error occurred during fetching userName and images \n";
+                 return false;
+            }
+        }
+        return true;
     }
 }
