@@ -16,7 +16,7 @@ class DBConnection
     {
         $host = "localhost";
         $username = "root";
-        $password = '';
+        $password = 'mysql';
         $dbname = "metrimonialdb";
         $result = mysqli_connect($host,$username,$password,$dbname);
         if($result)

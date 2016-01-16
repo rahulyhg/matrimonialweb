@@ -394,7 +394,7 @@ class Profile
         $from = new DateTime($dob);
         $to   = new DateTime();
         $age  = $from->diff($to)->y;
-        echo $from->diff($to)->y;
+        //echo $from->diff($to)->y;
 
         if ($disability == "true") {
 

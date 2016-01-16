@@ -41,9 +41,9 @@ function verifyUsername(username)
                  else
                  {
                      //alert("not Unique");
-                     $("#name").addClass('error');
-                     $("#error_username").append('Username already exists');
-                     Error += "Username already exists";
+                     $("#userName").addClass('error');
+                     $("#error").append('Username already exists').show();
+                     Error += "Username already exists \n";
                  }
             }
             else
@@ -88,7 +88,8 @@ function verifyEmail(email)
                     }
                     else {
                         $("#email").addClass('error');
-                        Error += "Email already exists";
+                        Error += "Email already exists \n";
+                        $("#error").append(Error).show();
                     }
                 }
                 else {
@@ -258,8 +259,17 @@ function verifyAll()
                   success: function(data)
                   {
                       //success
-                      if(data[0]['Status'] == 'ok') {
-                          window.location.href = 'signupformtwo.php';
+                      if(data[0]['Status'] == 'ok')
+                      {
+                          $("#form1").slideUp(100,function()
+                          {
+                              $("#form1").hide();
+                              $("#FormName").text('Socio Religious Background');
+                              $("#form2").slideDown(800,function()
+                              {
+                                  $("#form2").show();
+                              });
+                          });
                       }
                       else
                       {

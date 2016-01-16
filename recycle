@@ -1,0 +1,44 @@
+  <table class="quickSearchTable">
+
+      <tr>
+             <td>
+              <label class="">Groom</label> <input  type="radio" name="Gender" value="Male">
+             </td>
+
+          <td>
+              <label class="">Bride</label><input type="radio" name="Gender" value="Female">
+          </td>
+
+          <td>
+              <label class="">Age</label>
+              <select id="ageLow" style="width:90px;"></select>
+          </td>
+
+          <td>
+              <label class="">To</label>
+              <select id="ageHigh"style="width:90px;"></select>
+          </td>
+
+          <td>
+              <label class="" >Language</label>
+              <select id="language" style="width:120px;"></select>
+          </td>
+
+          <td>
+              <label class="" >Sect</label>
+              <select id="sect" style="width:120px;"></select>
+          </td>
+
+          <td>
+              <label class="" >Division</label>
+              <select id="country" style="width:120px;"></select>
+          </td>
+
+          <td>
+              <button id="search">QuickSearch</button>
+          </td>
+
+
+      </tr>
+
+  </table>

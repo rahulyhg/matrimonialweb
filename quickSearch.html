@@ -6,7 +6,7 @@
 
 
     <script type="text/javascript" src="jslib/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="jslib/bootstrap.min.js"></script>
+    <!--<script type="text/javascript" src="jslib/bootstrap.min.js"></script> -->
     <script type="text/javascript" src="js/Religion.js"></script>
     <script type="text/javascript" src="js/Country.js"></script>
     <script type="text/javascript" src="js/QuickSearch.js"></script>
@@ -71,7 +71,7 @@
 
                 <!--  Button  -->
                 <fieldset>
-                    <button id="search">Search Partner</button>
+                   <button id="search" onclick="quickSearch($('#gender').val(), $('#ageHigh').val(), $('#ageLow').val(), $('#religion').val(), $('#sect').val(), $('#country').val(), $('#state').val())">SearchPartner</button>
                 </fieldset>
 
             </form>
@@ -79,43 +79,21 @@
         </div>
 
 
-                <script>
+                <script type="text/javascript">
 
                     $(document).ready(function(){
 
+                       // e.preventDefault();
                         getReligions();
                         loadCountriesName();
 
-                        for(var i=17; i<80; i++)
+                        for(var i=18; i<80; i++)
                         {
                             var option = '<option value="'+i+'" > '+ i + '</option>';
                             $('#ageLow').append(option);  $('#ageHigh').append(option);
                         }
 
-                        $('#search').click(function()
-                        {
-                            //alert("button is pressed");
-                            //ajax response
-                            $.ajax({
-                                //url, dataType = 'json', data, type = 'post'|'Get',
-                                // functions -- success, error, onComplete, beforeLoad
-                                url: 'Action/random.php',
-                                dataType: 'json',
-                                type: 'post',
-                                success: function(data)
-                                {
 
-                                   console.log(data); 
-                                   alert(data[0]['Random']);
-                                },
-                                error:   function(data)
-                                {
-                                    console.log(data);
-                                     alert("Error formed during response");
-                                }
-                            });
-
-                        });
                     });
 
 

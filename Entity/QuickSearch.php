@@ -105,6 +105,7 @@ class QuickSearch {
          $partnerAge = $this->getPartnerAge($ageLow, $ageHigh);
         if( ( $rid =  $this->getReligionSect($religion,$sect) > 0 ) && ( $sid =  $this->getState($country,$city)  > 0 ) )
         {
+            $sid = $this->getState($country,$city);
             if($this->getPartnersList($gender, $partnerAge, $rid, $sid))
             {
                if($this->getUserNameImage())
@@ -181,6 +182,7 @@ class QuickSearch {
     private function getPartnersList($gender, $age, $religionSect, $state)
     {
         $this->query = "SELECT UserID,dob FROM profile WHERE age IN ($age) AND genderId = $gender AND religionId = $religionSect AND stateId = $state";
+        echo $this->query . '<br/>';
         $this->result= $this->db->Select($this->query);
         if($this->result)
         {
@@ -220,16 +222,19 @@ class QuickSearch {
             $age = $this->temp[$i]['Age'];
             $this->query="SELECT s.UserName, m.image FROM user s,image m WHERE s.UserID = $id AND m.UserID = $id AND approved = 1";
             $this->result = $this->db->Select($this->query);
-            if($this->result && mysqli_num_rows($this->result) > 0)
+            if($this->result )
             {
-               $row      = mysqli_fetch_assoc($this->result);
-               $userName = $row['UserName'];
-               $image   = base64_encode($row['image']);
-               array_push($this->final, [
-                                       "UserName" => $userName,
-                                       "Age"=>$age,
-                                       "Image"=>$image
-               ]);
+                if(mysqli_num_rows($this->result))
+                {
+                    $row      = mysqli_fetch_assoc($this->result);
+                    $userName = $row['UserName'];
+                    $image   = base64_encode($row['image']);
+                    array_push($this->final, [
+                        "UserName" => $userName,
+                        "Age"=>$age,
+                        "Image"=>$image
+                    ]);
+                }
             }
             else
             {

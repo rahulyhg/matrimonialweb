@@ -64,7 +64,7 @@
       
       <div class="form-group">
       <label for="again_pwd">Confirm Password:</label>
-      <input id="conform" type="password" class="form-control"  placeholder="Enter password again"onchange="validatePasswords()">
+      <input id="conform" type="password" class="form-control"  placeholder="Enter password again" onchange="validatePasswords()">
     </div>
       
 

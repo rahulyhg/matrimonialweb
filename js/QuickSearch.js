@@ -2,7 +2,7 @@
  * Created by Haziq on 1/6/2016.
  */
 
-var error;
+var error = "";
 
 /**
  * Perform the quick search operation
@@ -16,6 +16,10 @@ var error;
  */
 function quickSearch(gender, ageHigh, ageLow, religion, sect, country, city)
 {
+    var form = {
+        gender: gender, ageHigh: ageHigh, ageLow: ageLow ,
+        religion:religion, sect:sect, country:country, city:city
+    };
     if(!isNaN(gender) && !isNaN(ageHigh) && !isNaN(ageLow) && !isNaN(religion) && !isNaN(sect)
         && !isNaN(country) && !isNaN(city))
     {
@@ -51,6 +55,8 @@ function quickSearch(gender, ageHigh, ageLow, religion, sect, country, city)
     else
     {
       error += "All fields are necessary  \n";
+      alert(form.toString());
+      console.log(form);
     }
 
 
